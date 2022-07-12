@@ -17,3 +17,5 @@ pip3 install torch torchvision    //torchaudio
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 apt-get install -y libglib2.0-0
 
+#解压命令
+unzip FastestDetSet.zip -d ./
