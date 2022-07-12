@@ -1,13 +1,12 @@
 conda env list
 nvcc -V
+nvidia-smi
 git clone https://github.com/superbayes/FastestDet.git
 cd FastestDet/
 git checkout myCopy
 
 conda create -n yolo_37 python=3.7 -y
 conda activate yolo_37
-
-
 
 # ptorch 官方安装命令 cuda11 linux
 pip3 install torch==1.10.2+cu113 torchvision==0.11.3+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html 
@@ -17,5 +16,11 @@ pip3 install torch torchvision    //torchaudio
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 apt-get install -y libglib2.0-0
 
-#解压命令
-unzip FastestDetSet.zip -d ./
+#Calculate map evaluation
+python3 eval.py --yaml configs/coco2.yaml --weight checkpoint/weight_AP05:0.973796_300-epoch.pth
+#Export onnx
+python3 test.py --yaml configs/coco2.yaml --weight checkpoint/weight_AP05:0.973796_300-epoch.pth --img dataSets/val/hand1_272.jpg --onnx
+
+#onnx-sim to ncnn
+onnx2ncnn.exe  FastestDet-sim.onnx FastestDet-sim.param FastestDet-sim.bin
+ncnnoptimize.exe FastestDet-sim.param FastestDet-sim.bin FastestDet-sim-fp16.param FastestDet-sim-fp16.bin 1
